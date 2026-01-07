@@ -4,7 +4,9 @@
       "WebSearch",
       "WebFetch(domain:culorijs.org)",
       "Bash(cat:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(npm install:*)",
+      "Bash(npm uninstall:*)"
     ]
   }
 }

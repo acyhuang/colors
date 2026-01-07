@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { generatePalette, type ColorType } from './lib/colorPalette'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Slider } from '@/components/ui/slider'
+import { ColorDimensionGraphs } from '@/components/ColorDimensionGraphs'
 
 /**
  * OKHsl Palette Generator
@@ -25,38 +26,17 @@ function App() {
   const palette = generatePalette(hue, colorType)
 
   return (
-    <div className="h-screen w-full bg-background text-foreground flex flex-col border border-blue-400">
+    <div className="h-screen w-full bg-background text-foreground flex flex-col">
       <div className="p-4 border-b border-border">
-        <p className="font-semibold">Colors</p>
+        <p>Colors</p>
       </div>
 
       <div className="w-full flex-1 items-center justify-center space-y-8 p-4">
-        <div>
-
-        </div>
-        {/* Color Palette */}
-        <div className="space-y-4">
-          <div className="flex justify-center flex-wrap">
-            {palette.map((color) => (
-              <div key={color.scale} className="flex flex-col items-center gap-2">
-                <div
-                  className="w-18 h-24"
-                  style={{ backgroundColor: color.hex }}
-                />
-                <span className="text-xs text-muted-foreground font-mono">
-                  {color.scale}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Sliders */}
-        <div className="space-y-6 w-full max-w-md mx-auto">
+        <div className="flex gap-2 space-y-6 w-full max-w-md mx-auto">
           {/* Hue Control */}
-          <div className="space-y-2">
+          <div className="space-y-2 flex-1">
             <label className="block text-sm font-medium">
-              Hue: {hue}°
+              Hue: {hue}
             </label>
             <div className="flex gap-3 items-center">
               <Slider
@@ -92,6 +72,34 @@ function App() {
             </Select>
           </div>
         </div>
+
+
+        {/* Color Palette */}
+        <div className="w-full max-w-4xl mx-auto">
+          <div className="flex w-full">
+            {palette.map((color) => (
+              <div
+                key={color.scale}
+                className="flex flex-col items-center gap-2"
+                style={{ flex: '1 1 0' }}
+              >
+                <div
+                  className="h-24"
+                  style={{
+                    backgroundColor: color.hex,
+                    width: '100%',
+                  }}
+                />
+                <span className="text-xs text-muted-foreground font-mono">
+                  {color.scale}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Color Dimension Graphs */}
+        <ColorDimensionGraphs palette={palette} />
 
       </div>
       {/* Attribution */}
