@@ -73,33 +73,35 @@ function App() {
           </div>
         </div>
 
+        <div className="max-w-lg mx-auto space-y-8">
 
-        {/* Color Palette */}
-        <div className="w-full max-w-4xl mx-auto">
-          <div className="flex w-full">
-            {palette.map((color) => (
-              <div
-                key={color.scale}
-                className="flex flex-col items-center gap-2"
-                style={{ flex: '1 1 0' }}
-              >
+          {/* Color Palette */}
+          <div className="w-full">
+            <div className="flex w-full">
+              {palette.map((color) => (
                 <div
-                  className="h-24"
-                  style={{
-                    backgroundColor: color.hex,
-                    width: '100%',
-                  }}
-                />
-                <span className="text-xs text-muted-foreground font-mono">
-                  {color.scale}
-                </span>
-              </div>
-            ))}
+                  key={color.scale}
+                  className="flex flex-col items-center gap-2"
+                  style={{ flex: '1 1 0' }}
+                >
+                  <div
+                    className="h-16"
+                    style={{
+                      backgroundColor: color.hex,
+                      width: '100%',
+                    }}
+                  />
+                  <span className="text-xs text-muted-foreground font-mono">
+                    {color.scale}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
 
-        {/* Color Dimension Graphs */}
-        <ColorDimensionGraphs palette={palette} />
+          {/* Color Dimension Graphs */}
+          <ColorDimensionGraphs palette={palette} />
+        </div>
 
       </div>
       {/* Attribution */}

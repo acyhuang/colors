@@ -79,8 +79,6 @@ function GraphSVG({ chartData, palette, dimension, domain }: GraphSVGProps) {
     <svg
       viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
       className="w-full"
-      preserveAspectRatio="none"
-      style={{ height: '200px' }}
     >
       <defs>
         {/* Define gradients for line segments */}
@@ -110,7 +108,7 @@ function GraphSVG({ chartData, palette, dimension, domain }: GraphSVGProps) {
             x2={nextPoint.x}
             y2={nextPoint.y}
             stroke={`url(#grad-${dimension}-${idx})`}
-            strokeWidth={2}
+            strokeWidth={4}
           />
         )
       })}
@@ -121,7 +119,7 @@ function GraphSVG({ chartData, palette, dimension, domain }: GraphSVGProps) {
           key={`dot-${idx}`}
           cx={point.x}
           cy={point.y}
-          r={4}
+          r={6}
           fill={point.hex}
           stroke="#fff"
           strokeWidth={1.5}
@@ -131,7 +129,7 @@ function GraphSVG({ chartData, palette, dimension, domain }: GraphSVGProps) {
   )
 }
 
-interface SingleGraphProps {
+interface GraphProps {
   title: string
   dimension: Dimension
   palette: PaletteColor[]
@@ -139,56 +137,59 @@ interface SingleGraphProps {
   domain: [number, number]
 }
 
-function SingleGraph({
+function Graph({
   title,
   dimension,
   palette,
   chartData,
   domain,
-}: SingleGraphProps) {
+}: GraphProps) {
   return (
-    <div className="border border-border bg-card">
+    <div className="bg-card">
       {/* Title */}
-      <h3 className="text-sm font-medium mb-3">{title}</h3>
+      <h3 className="text-sm font-medium mb-2">{title}</h3>
 
-      {/* Color Bar */}
-      <div className="flex w-full mb-1">
-        {palette.map((color, idx) => (
-          <div
-            key={idx}
-            style={{
-              flex: '1 1 0',
-              backgroundColor: color.hex,
-              height: '4px',
-            }}
-          />
-        ))}
+      <div className="border border-border">
+        {/* Color Bar */}
+        <div className="flex w-full mb-1">
+          {palette.map((color, idx) => (
+            <div
+              key={idx}
+              style={{
+                flex: '1 1 0',
+                backgroundColor: color.hex,
+                height: '4px',
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Value Labels */}
+        <div className="flex w-full mb-2">
+          {chartData.map((point, idx) => (
+            <div
+              key={idx}
+              style={{
+                flex: '1 1 0',
+                textAlign: 'center',
+              }}
+              className="text-xs text-muted-foreground"
+            >
+              {point[dimension].toFixed(1)}
+            </div>
+          ))}
+        </div>
+
+        {/* Graph */}
+        <GraphSVG
+          chartData={chartData}
+          palette={palette}
+          dimension={dimension}
+          domain={domain}
+        />
       </div>
-
-      {/* Value Labels */}
-      <div className="flex w-full mb-2">
-        {chartData.map((point, idx) => (
-          <div
-            key={idx}
-            style={{
-              flex: '1 1 0',
-              textAlign: 'center',
-            }}
-            className="text-xs text-muted-foreground"
-          >
-            {point[dimension].toFixed(1)}
-          </div>
-        ))}
-      </div>
-
-      {/* Graph */}
-      <GraphSVG
-        chartData={chartData}
-        palette={palette}
-        dimension={dimension}
-        domain={domain}
-      />
     </div>
+    
   )
 }
 
@@ -196,9 +197,9 @@ export function ColorDimensionGraphs({ palette }: ColorDimensionGraphsProps) {
   const chartData = transformPaletteToChartData(palette)
 
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-6">
+    <div className="space-y-6">
       {/* Hue Graph */}
-      <SingleGraph
+      <Graph
         title="Hue"
         dimension="hue"
         palette={palette}
@@ -207,7 +208,7 @@ export function ColorDimensionGraphs({ palette }: ColorDimensionGraphsProps) {
       />
 
       {/* Saturation Graph */}
-      <SingleGraph
+      <Graph
         title="Saturation"
         dimension="saturation"
         palette={palette}
@@ -216,7 +217,7 @@ export function ColorDimensionGraphs({ palette }: ColorDimensionGraphsProps) {
       />
 
       {/* Lightness Graph */}
-      <SingleGraph
+      <Graph
         title="Lightness"
         dimension="lightness"
         palette={palette}

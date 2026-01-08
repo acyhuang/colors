@@ -19,7 +19,7 @@ export interface PaletteColor {
 /**
  * Calculate hue for a given scale value
  *
- * For neutrals: Returns constant hue of 250 (purplish gray)
+ * For neutrals: Returns constant hue
  * For colors: Returns H_base + 5 * (1 - n) to account for Bezold–Brücke shift
  *
  * @param baseHue - Base hue value (0-360)
@@ -69,14 +69,14 @@ function calculateLightness(n: number): number {
 /**
  * Generate a 10-step color palette based on a base hue and color type
  *
- * Creates colors at scale numbers: 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100
+ * Creates colors at scale numbers: 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95
  *
  * @param baseHue - Base hue value (0-360)
  * @param colorType - Whether to generate a 'neutral' or 'color' palette
  * @returns Array of 11 PaletteColor objects
  */
 export function generatePalette(baseHue: number, colorType: ColorType): PaletteColor[] {
-  const scales = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+  const scales = [5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95]
   const isNeutral = colorType === 'neutral'
 
   return scales.map(scale => {
