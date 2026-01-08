@@ -3,6 +3,8 @@ import { generatePalette, type ColorType } from './lib/colorPalette'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Slider } from '@/components/ui/slider'
 import { ColorDimensionGraphs } from '@/components/ColorDimensionGraphs'
+import { Button } from './components/ui/button'
+import { ExportDialog } from '@/components/ExportDialog'
 
 /**
  * OKHsl Palette Generator
@@ -28,11 +30,19 @@ function App() {
 
   return (
     <div className='h-screen w-full bg-background text-foreground flex flex-col'>
-      <div className='p-4 border-b border-border'>
+      <div className='p-4 flex justify-between items-center border-b border-border'>
         <p>Colors</p>
+        <ExportDialog
+          palette={palette}
+          trigger={
+            <Button variant='outline' size='sm'>
+              Export
+            </Button>
+          }
+        />
       </div>
 
-      <div className='w-full flex flex-1 gap-8 p-4'>
+      <div className='w-full md:flex flex-1 gap-8 p-4'>
         
       {/* Inputs */}
         <div className='w-full max-w-lg gap-2 space-y-6 border border-red-100'>
@@ -81,7 +91,7 @@ function App() {
           {/* Color Type Select */}
           <div className='space-y-2'>
             <label className='block text-sm font-medium'>Color Type</label>
-            <Select value={colorType} onValueChange={setColorType}>
+            <Select value={colorType} onValueChange={(value) => setColorType(value as ColorType)}>
               <SelectTrigger className='w-full'>
                 <SelectValue />
               </SelectTrigger>

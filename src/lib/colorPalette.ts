@@ -91,7 +91,7 @@ export function generatePalette(baseHue: number, colorType: ColorType, hueShift:
     const l = calculateLightness(n)
 
     // Create OKHsl color object
-    const okhslColor = okhsl({ h, s, l })
+    const okhslColor = okhsl({ mode: 'okhsl', h, s, l })
 
     // Convert to hex for display
     const hex = formatHex(okhslColor) || '#000000'
