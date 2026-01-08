@@ -75,7 +75,7 @@ function App() {
           {/* Hue Shift Control */}
           <div className='space-y-2 flex-1'>
             <label className='block text-sm font-medium'>
-              Hue Shift: {hueShift}
+              Hue Shift (0 for neutrals)
             </label>
             <input
               type='number'
@@ -153,6 +153,15 @@ function App() {
             className='text-primary hover:text-primary/80 underline'
           >
             Björn Ottosson
+          </a>
+          , generation from{' '}
+          <a
+            href=''
+            target='_blank'
+            rel='noopener noreferrer'
+            className='text-primary hover:text-primary/80 underline'
+          >
+            Matt Ström-Awn
           </a>
           , interface inspired by{' '}
           <a
