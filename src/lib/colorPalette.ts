@@ -9,6 +9,42 @@ import { okhsl, formatHex, converter } from 'culori'
  */
 
 /**
+ * Convert HSL hue to OkHSL hue
+ *
+ * Uses mid-range saturation and lightness for stable conversion
+ * @param hslHue - HSL hue value (0-360)
+ * @returns OkHSL hue value (0-360)
+ */
+export function hslToOkhslHue(hslHue: number): number {
+  const toOkhsl = converter('okhsl')
+  const okhslColor = toOkhsl({
+    mode: 'hsl',
+    h: hslHue,
+    s: 0.8,
+    l: 0.5
+  })
+  return okhslColor?.h ?? hslHue
+}
+
+/**
+ * Convert OkHSL hue to HSL hue
+ *
+ * Uses mid-range saturation and lightness for stable conversion
+ * @param okhslHue - OkHSL hue value (0-360)
+ * @returns HSL hue value (0-360)
+ */
+export function okhslToHslHue(okhslHue: number): number {
+  const toHsl = converter('hsl')
+  const hslColor = toHsl({
+    mode: 'okhsl',
+    h: okhslHue,
+    s: 0.8,
+    l: 0.5
+  })
+  return hslColor?.h ?? okhslHue
+}
+
+/**
  * Convert XYZ Y (luminance) to LAB L* (lightness)
  *
  * Based on CIE LAB formula with piecewise function

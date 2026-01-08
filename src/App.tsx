@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { generatePalette } from './lib/colorPalette'
+import { useState, useRef, useEffect } from 'react'
+import { generatePalette, hslToOkhslHue, okhslToHslHue } from './lib/colorPalette'
 import { Slider } from '@/components/ui/slider'
 import { ColorDimensionGraphs } from '@/components/ColorDimensionGraphs'
 import { Button } from './components/ui/button'
@@ -22,8 +22,37 @@ import { ExportDialog } from '@/components/ExportDialog'
 
 function App() {
   const [hue, setHue] = useState(180)
+  const [hslHue, setHslHue] = useState(210)
   const [hueShift, setHueShift] = useState(5)
   const [maxSaturation, setMaxSaturation] = useState(100)
+
+  // Refs to prevent infinite sync loops
+  const isUpdatingFromHsl = useRef(false)
+  const isUpdatingFromOkhsl = useRef(false)
+
+  // Sync HSL → OkHSL
+  useEffect(() => {
+    if (isUpdatingFromOkhsl.current) {
+      isUpdatingFromOkhsl.current = false
+      return
+    }
+
+    isUpdatingFromHsl.current = true
+    const convertedOkhslHue = hslToOkhslHue(hslHue)
+    setHue(convertedOkhslHue)
+  }, [hslHue])
+
+  // Sync OkHSL → HSL
+  useEffect(() => {
+    if (isUpdatingFromHsl.current) {
+      isUpdatingFromHsl.current = false
+      return
+    }
+
+    isUpdatingFromOkhsl.current = true
+    const convertedHslHue = okhslToHslHue(hue)
+    setHslHue(convertedHslHue)
+  }, [hue])
 
   const palette = generatePalette(hue, hueShift, maxSaturation)
 
@@ -46,10 +75,35 @@ function App() {
       {/* Inputs */}
         <div className='w-full max-w-lg gap-2 space-y-6 border border-red-100'>
 
-          {/* Hue Control */}
+          {/* HSL Hue Control */}
           <div className='space-y-2 flex-1'>
             <label className='block text-sm font-medium'>
-              Base Hue
+              Base Hue (HSL)
+            </label>
+            <div className='flex gap-3 items-center'>
+              <Slider
+                value={[hslHue]}
+                onValueChange={(values) => setHslHue(values[0])}
+                min={0}
+                max={360}
+                step={0.1}
+                className='flex-1'
+              />
+              <input
+                type='number'
+                min={0}
+                max={360}
+                value={hslHue}
+                onChange={(e) => setHslHue(Number(e.target.value))}
+                className='w-20 px-3 py-2 bg-muted border border-border rounded-md text-sm'
+              />
+            </div>
+          </div>
+
+          {/* OkHSL Hue Control */}
+          <div className='space-y-2 flex-1'>
+            <label className='block text-sm font-medium'>
+              Base Hue (OkHSL)
             </label>
             <div className='flex gap-3 items-center'>
               <Slider
