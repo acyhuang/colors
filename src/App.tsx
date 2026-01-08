@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import { generatePalette, type ColorType } from './lib/colorPalette'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { generatePalette } from './lib/colorPalette'
 import { Slider } from '@/components/ui/slider'
 import { ColorDimensionGraphs } from '@/components/ColorDimensionGraphs'
 import { Button } from './components/ui/button'
@@ -23,10 +22,10 @@ import { ExportDialog } from '@/components/ExportDialog'
 
 function App() {
   const [hue, setHue] = useState(180)
-  const [colorType, setColorType] = useState<ColorType>('color')
   const [hueShift, setHueShift] = useState(5)
+  const [maxSaturation, setMaxSaturation] = useState(100)
 
-  const palette = generatePalette(hue, colorType, hueShift)
+  const palette = generatePalette(hue, hueShift, maxSaturation)
 
   return (
     <div className='h-screen w-full bg-background text-foreground flex flex-col'>
@@ -50,7 +49,7 @@ function App() {
           {/* Hue Control */}
           <div className='space-y-2 flex-1'>
             <label className='block text-sm font-medium'>
-              Base Hue: {hue}
+              Base Hue
             </label>
             <div className='flex gap-3 items-center'>
               <Slider
@@ -88,18 +87,20 @@ function App() {
             />
           </div>
 
-          {/* Color Type Select */}
-          <div className='space-y-2'>
-            <label className='block text-sm font-medium'>Color Type</label>
-            <Select value={colorType} onValueChange={(value) => setColorType(value as ColorType)}>
-              <SelectTrigger className='w-full'>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value='color'>Color</SelectItem>
-                <SelectItem value='neutral'>Neutral</SelectItem>
-              </SelectContent>
-            </Select>
+          {/* Max Saturation Control */}
+          <div className='space-y-2 flex-1'>
+            <label className='block text-sm font-medium'>
+              Max Saturation (20 for neutrals)
+            </label>
+            <input
+              type='number'
+              min={0}
+              max={100}
+              step={1}
+              value={maxSaturation}
+              onChange={(e) => setMaxSaturation(Number(e.target.value))}
+              className='w-full px-3 py-2 bg-muted border border-border rounded-md text-sm'
+            />
           </div>
 
           {/* Background Color */}  
@@ -107,7 +108,6 @@ function App() {
                 
           </div>
         </div>
-
 
         {/* Display */}
         <div className='w-full max-w-lg space-y-8 border border-blue-100'>
