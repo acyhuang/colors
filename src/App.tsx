@@ -22,76 +22,103 @@ import { ColorDimensionGraphs } from '@/components/ColorDimensionGraphs'
 function App() {
   const [hue, setHue] = useState(180)
   const [colorType, setColorType] = useState<ColorType>('color')
+  const [hueShift, setHueShift] = useState(5)
 
-  const palette = generatePalette(hue, colorType)
+  const palette = generatePalette(hue, colorType, hueShift)
 
   return (
-    <div className="h-screen w-full bg-background text-foreground flex flex-col">
-      <div className="p-4 border-b border-border">
+    <div className='h-screen w-full bg-background text-foreground flex flex-col'>
+      <div className='p-4 border-b border-border'>
         <p>Colors</p>
       </div>
 
-      <div className="w-full flex-1 items-center justify-center space-y-8 p-4">
-        <div className="flex gap-2 space-y-6 w-full max-w-md mx-auto">
+      <div className='w-full flex flex-1 gap-8 p-4'>
+        
+      {/* Inputs */}
+        <div className='w-full max-w-lg gap-2 space-y-6 border border-red-100'>
+
           {/* Hue Control */}
-          <div className="space-y-2 flex-1">
-            <label className="block text-sm font-medium">
-              Hue: {hue}
+          <div className='space-y-2 flex-1'>
+            <label className='block text-sm font-medium'>
+              Base Hue: {hue}
             </label>
-            <div className="flex gap-3 items-center">
+            <div className='flex gap-3 items-center'>
               <Slider
                 value={[hue]}
                 onValueChange={(values) => setHue(values[0])}
                 min={0}
                 max={360}
                 step={0.1}
-                className="flex-1"
+                className='flex-1'
               />
               <input
-                type="number"
+                type='number'
                 min={0}
                 max={360}
                 value={hue}
                 onChange={(e) => setHue(Number(e.target.value))}
-                className="w-20 px-3 py-2 bg-muted border border-border rounded-md text-sm"
+                className='w-20 px-3 py-2 bg-muted border border-border rounded-md text-sm'
               />
             </div>
           </div>
 
+          {/* Hue Shift Control */}
+          <div className='space-y-2 flex-1'>
+            <label className='block text-sm font-medium'>
+              Hue Shift: {hueShift}
+            </label>
+            <input
+              type='number'
+              min={0}
+              max={20}
+              step={0.5}
+              value={hueShift}
+              onChange={(e) => setHueShift(Number(e.target.value))}
+              className='w-full px-3 py-2 bg-muted border border-border rounded-md text-sm'
+            />
+          </div>
+
           {/* Color Type Select */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium">Color Type</label>
+          <div className='space-y-2'>
+            <label className='block text-sm font-medium'>Color Type</label>
             <Select value={colorType} onValueChange={setColorType}>
-              <SelectTrigger className="w-full">
+              <SelectTrigger className='w-full'>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="color">Color</SelectItem>
-                <SelectItem value="neutral">Neutral</SelectItem>
+                <SelectItem value='color'>Color</SelectItem>
+                <SelectItem value='neutral'>Neutral</SelectItem>
               </SelectContent>
             </Select>
           </div>
+
+          {/* Background Color */}  
+          <div>
+                
+          </div>
         </div>
 
-        <div className="max-w-lg mx-auto space-y-8">
+
+        {/* Display */}
+        <div className='w-full max-w-lg space-y-8 border border-blue-100'>
 
           {/* Color Palette */}
-          <div className="w-full">
-            <div className="flex w-full">
+          <div className='w-full'>
+            <div className='flex w-full'>
               {palette.map((color) => (
                 <div
                   key={color.scale}
-                  className="flex flex-col items-center gap-2"
+                  className='flex flex-col items-center gap-2'
                   style={{ flex: '1 1 0' }}
                 >
                   <div
-                    className="h-16"
+                    className='h-16'
                     style={{
                       backgroundColor: color.hex,
                       width: '100%',
                     }}
                   />
-                  <span className="text-xs text-muted-foreground font-mono">
+                  <span className='text-xs text-muted-foreground font-mono'>
                     {color.scale}
                   </span>
                 </div>
@@ -101,23 +128,34 @@ function App() {
 
           {/* Color Dimension Graphs */}
           <ColorDimensionGraphs palette={palette} />
-        </div>
+        {/* </div> */}
+      </div>
 
       </div>
       {/* Attribution */}
-      <div className="w-full text-center p-4">
-        <p className="text-sm text-muted-foreground">
+      <div className='w-full text-center p-4'>
+        <p className='text-xs text-muted-foreground'>
           OKHsl color space by{' '}
           <a
-            href="https://bottosson.github.io/posts/colorpicker/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary hover:text-primary/80 underline"
+            href='https://bottosson.github.io/posts/colorpicker/'
+            target='_blank'
+            rel='noopener noreferrer'
+            className='text-primary hover:text-primary/80 underline'
           >
             Björn Ottosson
           </a>
+          , interface inspired by{' '}
+          <a
+            href='https://stripe.com/blog/accessible-color-systems'
+            target='_blank'
+            rel='noopener noreferrer'
+            className='text-primary hover:text-primary/80 underline'
+          >
+            Daryl Koopersmith, Wilson Miner
+          </a>
         </p>
       </div>
+          
     </div>
   )
 }

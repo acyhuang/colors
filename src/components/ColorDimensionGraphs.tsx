@@ -78,7 +78,7 @@ function GraphSVG({ chartData, palette, dimension, domain }: GraphSVGProps) {
   return (
     <svg
       viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
-      className="w-full"
+      className='w-full'
     >
       <defs>
         {/* Define gradients for line segments */}
@@ -86,13 +86,13 @@ function GraphSVG({ chartData, palette, dimension, domain }: GraphSVGProps) {
           <linearGradient
             key={`grad-${dimension}-${idx}`}
             id={`grad-${dimension}-${idx}`}
-            x1="0%"
-            y1="0%"
-            x2="100%"
-            y2="0%"
+            x1='0%'
+            y1='0%'
+            x2='100%'
+            y2='0%'
           >
-            <stop offset="0%" stopColor={color.hex} />
-            <stop offset="100%" stopColor={palette[idx + 1].hex} />
+            <stop offset='0%' stopColor={color.hex} />
+            <stop offset='100%' stopColor={palette[idx + 1].hex} />
           </linearGradient>
         ))}
       </defs>
@@ -121,7 +121,7 @@ function GraphSVG({ chartData, palette, dimension, domain }: GraphSVGProps) {
           cy={point.y}
           r={6}
           fill={point.hex}
-          stroke="#fff"
+          stroke='#fff'
           strokeWidth={1.5}
         />
       ))}
@@ -145,13 +145,13 @@ function Graph({
   domain,
 }: GraphProps) {
   return (
-    <div className="bg-card">
+    <div className='bg-card'>
       {/* Title */}
-      <h3 className="text-sm font-medium mb-2">{title}</h3>
+      <h3 className='text-sm font-medium mb-2'>{title}</h3>
 
-      <div className="border border-border">
+      <div className='border border-border'>
         {/* Color Bar */}
-        <div className="flex w-full mb-1">
+        <div className='flex w-full mb-1'>
           {palette.map((color, idx) => (
             <div
               key={idx}
@@ -165,7 +165,7 @@ function Graph({
         </div>
 
         {/* Value Labels */}
-        <div className="flex w-full mb-2">
+        <div className='flex w-full mb-2'>
           {chartData.map((point, idx) => (
             <div
               key={idx}
@@ -173,7 +173,7 @@ function Graph({
                 flex: '1 1 0',
                 textAlign: 'center',
               }}
-              className="text-xs text-muted-foreground"
+              className='text-xs text-muted-foreground'
             >
               {point[dimension].toFixed(1)}
             </div>
@@ -189,7 +189,7 @@ function Graph({
         />
       </div>
     </div>
-    
+
   )
 }
 
@@ -197,11 +197,11 @@ export function ColorDimensionGraphs({ palette }: ColorDimensionGraphsProps) {
   const chartData = transformPaletteToChartData(palette)
 
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       {/* Hue Graph */}
       <Graph
-        title="Hue"
-        dimension="hue"
+        title='Hue'
+        dimension='hue'
         palette={palette}
         chartData={chartData}
         domain={[0, 360]}
@@ -209,8 +209,8 @@ export function ColorDimensionGraphs({ palette }: ColorDimensionGraphsProps) {
 
       {/* Saturation Graph */}
       <Graph
-        title="Saturation"
-        dimension="saturation"
+        title='Saturation'
+        dimension='saturation'
         palette={palette}
         chartData={chartData}
         domain={[0, 100]}
@@ -218,8 +218,8 @@ export function ColorDimensionGraphs({ palette }: ColorDimensionGraphsProps) {
 
       {/* Lightness Graph */}
       <Graph
-        title="Lightness"
-        dimension="lightness"
+        title='Lightness'
+        dimension='lightness'
         palette={palette}
         chartData={chartData}
         domain={[0, 100]}

@@ -20,17 +20,18 @@ export interface PaletteColor {
  * Calculate hue for a given scale value
  *
  * For neutrals: Returns constant hue
- * For colors: Returns H_base + 5 * (1 - n) to account for Bezold–Brücke shift
+ * For colors: Returns H_base + hueShift * (1 - n) to account for Bezold–Brücke shift
  *
  * @param baseHue - Base hue value (0-360)
  * @param n - Normalized scale value (0-1)
  * @param isNeutral - Whether this is a neutral color
+ * @param hueShift - Amount of hue shift to apply
  */
-function calculateHue(baseHue: number, n: number, isNeutral: boolean): number {
+function calculateHue(baseHue: number, n: number, isNeutral: boolean, hueShift: number): number {
   if (isNeutral) {
     return baseHue
   }
-  return baseHue + 5 * (1 - n)
+  return baseHue + hueShift * (1 - n)
 }
 
 /**
@@ -73,9 +74,10 @@ function calculateLightness(n: number): number {
  *
  * @param baseHue - Base hue value (0-360)
  * @param colorType - Whether to generate a 'neutral' or 'color' palette
+ * @param hueShift - Amount of hue shift to apply (default: 5)
  * @returns Array of 11 PaletteColor objects
  */
-export function generatePalette(baseHue: number, colorType: ColorType): PaletteColor[] {
+export function generatePalette(baseHue: number, colorType: ColorType, hueShift: number = 5): PaletteColor[] {
   const scales = [5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95]
   const isNeutral = colorType === 'neutral'
 
@@ -84,7 +86,7 @@ export function generatePalette(baseHue: number, colorType: ColorType): PaletteC
     const n = scale / 100
 
     // Calculate OKHsl values using the formulas
-    const h = calculateHue(baseHue, n, isNeutral)
+    const h = calculateHue(baseHue, n, isNeutral, hueShift)
     const s = calculateSaturation(n, isNeutral)
     const l = calculateLightness(n)
 
