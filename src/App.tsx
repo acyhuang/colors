@@ -25,6 +25,7 @@ function App() {
   const [hslHue, setHslHue] = useState(210)
   const [hueShift, setHueShift] = useState(5)
   const [maxSaturation, setMaxSaturation] = useState(100)
+  const [minSaturation, setMinSaturation] = useState(0)
 
   // Refs to prevent infinite sync loops
   const isUpdatingFromHsl = useRef(false)
@@ -54,7 +55,7 @@ function App() {
     setHslHue(convertedHslHue)
   }, [hue])
 
-  const palette = generatePalette(hue, hueShift, maxSaturation)
+  const palette = generatePalette(hue, hueShift, maxSaturation, minSaturation)
 
   return (
     <div className='h-screen w-full bg-background text-foreground flex flex-col'>
@@ -73,7 +74,7 @@ function App() {
       <div className='w-full md:flex flex-1 gap-8 p-4'>
         
       {/* Inputs */}
-        <div className='w-full max-w-lg gap-2 space-y-6 border border-red-100'>
+        <div className='w-full max-w-lg gap-2 space-y-6'>
 
           {/* HSL Hue Control */}
           <div className='space-y-2 flex-1'>
@@ -141,21 +142,40 @@ function App() {
             />
           </div>
 
-          {/* Max Saturation Control */}
-          <div className='space-y-2 flex-1'>
-            <label className='block text-sm font-medium'>
-              Max Saturation (20 for neutrals)
-            </label>
-            <input
-              type='number'
-              min={0}
-              max={100}
-              step={1}
-              value={maxSaturation}
-              onChange={(e) => setMaxSaturation(Number(e.target.value))}
-              className='w-full px-3 py-2 bg-muted border border-border rounded-md text-sm'
-            />
+          {/* Saturation Controls */}
+          <div className='flex gap-4'>
+
+            <div className='space-y-2 flex-1'>
+              <label className='block text-sm font-medium'>
+                Min Saturation
+              </label>
+              <input
+                type='number'
+                min={0}
+                max={100}
+                step={1}
+                value={minSaturation}
+                onChange={(e) => setMinSaturation(Number(e.target.value))}
+                className='w-full px-3 py-2 bg-muted border border-border rounded-md text-sm'
+              />
+            </div>
+
+            <div className='space-y-2 flex-1'>
+              <label className='block text-sm font-medium'>
+                Max Saturation (20 for neutrals)
+              </label>
+              <input
+                type='number'
+                min={0}
+                max={100}
+                step={1}
+                value={maxSaturation}
+                onChange={(e) => setMaxSaturation(Number(e.target.value))}
+                className='w-full px-3 py-2 bg-muted border border-border rounded-md text-sm'
+              />
+            </div>
           </div>
+
 
           {/* Background Color */}  
           <div>
@@ -164,7 +184,7 @@ function App() {
         </div>
 
         {/* Display */}
-        <div className='w-full max-w-lg space-y-8 border border-blue-100'>
+        <div className='w-full max-w-lg space-y-8'>
 
           {/* Color Palette */}
           <div className='w-full'>

@@ -108,30 +108,18 @@ function calculateHue(baseHue: number, n: number, hueShift: number): number {
 }
 
 /**
- * Calculate the saturation curve coefficient from desired maximum saturation
- *
- * Given S(n) = -a*n² + a*n, the maximum occurs at n=0.5 where S(0.5) = a*0.25
- * Therefore: a = 4 * maxSaturation
- *
- * @param maxSaturation - Maximum saturation value at n=0.5 (0-1 range)
- * @returns Coefficient 'a' for the parabolic curve
- */
-function calculateSaturationCoefficient(maxSaturation: number): number {
-  return 4 * maxSaturation
-}
-
-/**
  * Calculate saturation for a given scale value
  *
- * Uses a parabolic curve S(n) = -a*n² + a*n that peaks at n=0.5
- * The coefficient 'a' is derived from the desired maximum saturation
+ * Uses parabolic curve S(n) = -4(Smax - Smin)n² + 4(Smax - Smin)n + Smin
+ * Peaks at maxSaturation at n=0.5, and equals minSaturation at n=0 and n=1
  *
  * @param n - Normalized scale value (0-1)
  * @param maxSaturation - Maximum saturation value at n=0.5 (0-1 range)
+ * @param minSaturation - Minimum saturation value at n=0 and n=1 (0-1 range)
  */
-function calculateSaturation(n: number, maxSaturation: number): number {
-  const a = calculateSaturationCoefficient(maxSaturation)
-  return -a * Math.pow(n, 2) + a * n
+function calculateSaturation(n: number, maxSaturation: number, minSaturation: number): number {
+  const amplitude = 4 * (maxSaturation - minSaturation)
+  return -amplitude * Math.pow(n, 2) + amplitude * n + minSaturation
 }
 
 /**
@@ -182,9 +170,10 @@ function calculateLightness(n: number, backgroundY: number): number {
  * @param baseHue - Base hue value (0-360)
  * @param hueShift - Amount of hue shift to apply (default: 5, use 0 for neutrals)
  * @param maxSaturation - Maximum saturation at n=0.5 (0-100, default: 100, use 20 for neutrals)
+ * @param minSaturation - Minimum saturation at n=0 and n=1 (0-100, default: 0)
  * @returns Array of 11 PaletteColor objects
  */
-export function generatePalette(baseHue: number, hueShift: number = 5, maxSaturation: number = 100): PaletteColor[] {
+export function generatePalette(baseHue: number, hueShift: number = 5, maxSaturation: number = 100, minSaturation: number = 0): PaletteColor[] {
   const scales = [5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95]
 
   // Fixed white background for contrast calculations (user-configurable version coming later)
@@ -195,12 +184,13 @@ export function generatePalette(baseHue: number, hueShift: number = 5, maxSatura
     // Normalize scale to 0-1 range
     const n = scale / 100
 
-    // Convert max saturation from percentage (0-100) to decimal (0-1)
+    // Convert saturation from percentage (0-100) to decimal (0-1)
     const maxSaturationDecimal = maxSaturation / 100
+    const minSaturationDecimal = minSaturation / 100
 
     // Calculate OKHsl values using the formulas
     const h = calculateHue(baseHue, n, hueShift)
-    const s = calculateSaturation(n, maxSaturationDecimal)
+    const s = calculateSaturation(n, maxSaturationDecimal, minSaturationDecimal)
     const l = calculateLightness(n, backgroundY)
 
     // Create OKHsl color object
