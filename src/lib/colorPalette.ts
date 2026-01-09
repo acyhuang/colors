@@ -2,6 +2,10 @@ import { okhsl, formatHex, converter } from 'culori'
 
 export const BACKGROUND_COLOR = '#FFFFFF'
 
+// D65 white point chromaticity ratios for neutral gray in XYZ
+const D65_X = 0.95047
+const D65_Z = 1.08883
+
 /**
  * Color Palette Generator using OKHsl color space
  *
@@ -44,37 +48,6 @@ export function okhslToHslHue(okhslHue: number): number {
     l: 0.5
   })
   return hslColor?.h ?? okhslHue
-}
-
-/**
- * Convert XYZ Y (luminance) to LAB L* (lightness)
- *
- * Based on CIE LAB formula with piecewise function
- * @param Y - Luminance value (0-1)
- * @returns LAB L* value (0-100)
- */
-function YtoL(Y: number): number {
-  const threshold = 0.0088564516 // (6/29)^3
-  if (Y <= threshold) {
-    return Y * 903.2962962
-  } else {
-    return 116 * Math.pow(Y, 1 / 3) - 16
-  }
-}
-
-/**
- * OKHsl toe function
- *
- * Maps LAB L* to OKHsl L using the toe function
- * @param l - LAB L* value normalized to 0-1 range
- * @returns OKHsl L value
- */
-function toe(l: number): number {
-  const k1 = 0.206
-  const k2 = 0.03
-  const k3 = (1 + k1) / (1 + k2)
-
-  return 0.5 * (k3 * l - k1 + Math.sqrt((k3 * l - k1) * (k3 * l - k1) + 4 * k2 * k3 * l))
 }
 
 /**
@@ -181,11 +154,18 @@ function calculateLightness(n: number, backgroundY: number): number {
   // Clamp to valid range [0, 1]
   requiredY = Math.max(0, Math.min(1, requiredY))
 
-  // Convert: XYZ Y → LAB L* → OKHsl L
-  const labL = YtoL(requiredY)
-  const okhslL = toe(labL / 100) // LAB L* is 0-100, normalize to 0-1
+  // Convert XYZ Y to OKHsl L using culori's proper conversion chain
+  // Create a neutral gray in XYZ with the target luminance (D65 white point)
+  const toOkhsl = converter('okhsl')
+  const xyzGray = {
+    mode: 'xyz65' as const,
+    x: D65_X * requiredY,
+    y: requiredY,
+    z: D65_Z * requiredY
+  }
+  const okhslGray = toOkhsl(xyzGray)
 
-  return okhslL
+  return okhslGray?.l ?? 0
 }
 
 /**
