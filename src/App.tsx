@@ -76,7 +76,7 @@ function App() {
       <div className='w-full md:flex flex-1 gap-8 p-4'>
         
       {/* Inputs */}
-        <div className='w-full max-w-lg gap-2 space-y-6'>
+        <div className='w-full max-w-lg md:max-w-md gap-2 space-y-6'>
 
           {/* HSL Hue Control */}
           <div className='space-y-2 flex-1'>
@@ -96,7 +96,7 @@ function App() {
                 type='number'
                 min={0}
                 max={360}
-                value={hslHue}
+                value={hslHue.toFixed(1)}
                 onChange={(e) => setHslHue(Number(e.target.value))}
                 className='w-20 px-3 py-2 bg-muted border border-border rounded-md text-sm'
               />
@@ -121,7 +121,7 @@ function App() {
                 type='number'
                 min={0}
                 max={360}
-                value={hue}
+                value={hue.toFixed(1)}
                 onChange={(e) => setHue(Number(e.target.value))}
                 className='w-20 px-3 py-2 bg-muted border border-border rounded-md text-sm'
               />
@@ -130,9 +130,10 @@ function App() {
 
           {/* Hue Shift Control */}
           <div className='space-y-2 flex-1'>
-            <label className='block text-sm font-medium'>
-              Hue Shift (0 for neutrals)
-            </label>
+            <div className='flex items-baseline gap-2'>
+              <label className='block text-sm font-medium'>Hue Shift</label>
+              <p className='text-xs text-muted-foreground'>0 for neutrals</p>
+            </div>
             <input
               type='number'
               min={0}
@@ -146,11 +147,8 @@ function App() {
 
           {/* Saturation Controls */}
           <div className='flex gap-4'>
-
             <div className='space-y-2 flex-1'>
-              <label className='block text-sm font-medium'>
-                Min Saturation
-              </label>
+              <label className='block text-sm font-medium'>Min Saturation</label>
               <input
                 type='number'
                 min={0}
@@ -163,9 +161,10 @@ function App() {
             </div>
 
             <div className='space-y-2 flex-1'>
-              <label className='block text-sm font-medium'>
-                Max Saturation (20 for neutrals)
-              </label>
+              <div className='flex items-baseline gap-2'>
+                <label className='block text-sm font-medium'>Max Saturation</label>
+                <p className='text-xs text-muted-foreground'>20 for neutrals</p>
+              </div>
               <input
                 type='number'
                 min={0}
@@ -262,7 +261,7 @@ function App() {
           >
             Björn Ottosson
           </a>
-          , generation from{' '}
+          ; generation from{' '}
           <a
             href=''
             target='_blank'
@@ -271,7 +270,7 @@ function App() {
           >
             Matt Ström-Awn
           </a>
-          , interface inspired by{' '}
+          ; interface inspired by{' '}
           <a
             href='https://stripe.com/blog/accessible-color-systems'
             target='_blank'
