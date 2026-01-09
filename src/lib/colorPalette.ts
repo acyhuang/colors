@@ -1,5 +1,7 @@
 import { okhsl, formatHex, converter } from 'culori'
 
+export const BACKGROUND_COLOR = '#FFFFFF'
+
 /**
  * Color Palette Generator using OKHsl color space
  *
@@ -81,10 +83,36 @@ function toe(l: number): number {
  * @param hexColor - Hex color string (e.g., '#FFFFFF')
  * @returns Luminance value (0-1), defaults to 1.0 (white) if conversion fails
  */
-function getColorLuminance(hexColor: string): number {
+export function getColorLuminance(hexColor: string): number {
   const toXyz = converter('xyz65')
   const xyzColor = toXyz(hexColor)
   return xyzColor?.y ?? 1.0
+}
+
+/**
+ * Calculate WCAG contrast ratio between two colors
+ *
+ * @param hex1 - First hex color
+ * @param hex2 - Second hex color
+ * @returns Contrast ratio (1 to 21)
+ */
+export function calculateContrastRatio(hex1: string, hex2: string): number {
+  const L1 = getColorLuminance(hex1)
+  const L2 = getColorLuminance(hex2)
+  const lighter = Math.max(L1, L2)
+  const darker = Math.min(L1, L2)
+  return (lighter + 0.05) / (darker + 0.05)
+}
+
+/**
+ * Get appropriate text color (black or white) for overlay on a given background
+ *
+ * @param backgroundHex - Background color hex
+ * @returns '#000000' or '#FFFFFF'
+ */
+export function getOverlayTextColor(backgroundHex: string): string {
+  const luminance = getColorLuminance(backgroundHex)
+  return luminance > 0.179 ? '#000000' : '#FFFFFF'
 }
 
 export interface PaletteColor {
@@ -176,9 +204,7 @@ function calculateLightness(n: number, backgroundY: number): number {
 export function generatePalette(baseHue: number, hueShift: number = 5, maxSaturation: number = 100, minSaturation: number = 0): PaletteColor[] {
   const scales = [5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95]
 
-  // Fixed white background for contrast calculations (user-configurable version coming later)
-  const backgroundColor = '#FFFFFF'
-  const backgroundY = getColorLuminance(backgroundColor)
+  const backgroundY = getColorLuminance(BACKGROUND_COLOR)
 
   return scales.map(scale => {
     // Normalize scale to 0-1 range

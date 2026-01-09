@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
-import { generatePalette, hslToOkhslHue, okhslToHslHue } from './lib/colorPalette'
+import { generatePalette, hslToOkhslHue, okhslToHslHue, calculateContrastRatio, getOverlayTextColor, BACKGROUND_COLOR } from './lib/colorPalette'
+import { cn } from '@/lib/utils'
 import { Slider } from '@/components/ui/slider'
 import { ColorDimensionGraphs } from '@/components/ColorDimensionGraphs'
 import { Button } from './components/ui/button'
@@ -26,6 +27,7 @@ function App() {
   const [hueShift, setHueShift] = useState(5)
   const [maxSaturation, setMaxSaturation] = useState(100)
   const [minSaturation, setMinSaturation] = useState(0)
+  const [selectedScale, setSelectedScale] = useState<number | null>(null)
 
   // Refs to prevent infinite sync loops
   const isUpdatingFromHsl = useRef(false)
@@ -184,29 +186,61 @@ function App() {
         </div>
 
         {/* Display */}
-        <div className='w-full max-w-lg space-y-8'>
+        <div className='w-full max-w-lg space-y-8 '>
 
           {/* Color Palette */}
           <div className='w-full'>
-            <div className='flex w-full'>
-              {palette.map((color) => (
-                <div
-                  key={color.scale}
-                  className='flex flex-col items-center gap-2'
-                  style={{ flex: '1 1 0' }}
-                >
+            <div className='flex w-full group'>
+              {palette.map((color) => {
+                const isSelected = selectedScale === color.scale
+                const selectedColor = palette.find(c => c.scale === selectedScale)
+                const hasSelection = selectedScale !== null
+                const showOverlay = !isSelected
+                const compareColor = selectedColor?.hex ?? BACKGROUND_COLOR
+                const contrastRatio = showOverlay
+                  ? calculateContrastRatio(compareColor, color.hex)
+                  : null
+
+                return (
                   <div
-                    className='h-16'
-                    style={{
-                      backgroundColor: color.hex,
-                      width: '100%',
-                    }}
-                  />
-                  <span className='text-xs text-muted-foreground font-mono'>
-                    {color.scale}
-                  </span>
-                </div>
-              ))}
+                    key={color.scale}
+                    className='flex flex-col items-center gap-2'
+                    style={{ flex: '1 1 0' }}
+                  >
+                    <div
+                      className={cn(
+                        'h-16 relative cursor-pointer transition-all',
+                        isSelected && 'border-4 border-white'
+                      )}
+                      style={{
+                        backgroundColor: color.hex,
+                        width: '100%',
+                      }}
+                      onClick={() => setSelectedScale(prev => prev === color.scale ? null : color.scale)}
+                    >
+                      {showOverlay && contrastRatio !== null && (
+                        <div
+                          className={cn(
+                            'absolute inset-0 flex items-center justify-center transition-opacity',
+                            !hasSelection && 'opacity-0 group-hover:opacity-50'
+                          )}
+                          style={{
+                            color: getOverlayTextColor(color.hex),
+                            ...(hasSelection && { opacity: 0.5 })
+                          }}
+                        >
+                          <span className='text-sm font-mono font-medium'>
+                            {contrastRatio.toFixed(1)}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <span className='text-xs text-muted-foreground font-mono'>
+                      {color.scale}
+                    </span>
+                  </div>
+                )
+              })}
             </div>
           </div>
 

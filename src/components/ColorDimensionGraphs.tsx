@@ -149,7 +149,7 @@ function Graph({
       {/* Title */}
       <h3 className='text-sm font-medium mb-2'>{title}</h3>
 
-      <div className='border border-border'>
+      <div className='border-b border-l border-r border-border'>
         {/* Color Bar */}
         <div className='flex w-full mb-1'>
           {palette.map((color, idx) => (
